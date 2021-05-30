@@ -1,13 +1,20 @@
 import re
 import sys
 
-def main():
-    punct_pattern = re.compile(r' [!,.:?]')
-    quot_pattern = re.compile(r'" .* "')
+class Detokenizer:
+    def __init__(self):
+        self.punct_pattern = re.compile(r' ([!,.:?])')
+        self.quot_pattern = re.compile(r'" ([^"]*) "')
 
-    for x in sys.stdin:
+    def __call__(self, x):
         x = x.strip()
-        x = punct_pattern.sub('\\1', x)
-        x = quot_pattern.sub('"\\1"', x)
+        x = self.punct_pattern.sub('\\1', x)
+        x = self.quot_pattern.sub('"\\1"', x)
+        return x
+
+def main():
+    detokenizer = Detokenizer()
+    for x in sys.stdin:
+        x = detokenizer(x)
         print(x)
 
