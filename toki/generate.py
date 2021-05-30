@@ -43,6 +43,28 @@ def sample_sentence(vocab, model, temperature = 1.0, top_p = 0.8, max_tokens = 6
             break
     return sent[1:-1]
 
+class TokiGenerator:
+    def __init__(self, checkpoint, hidden_size, nhead, num_layers, no_specials=False):
+        self.no_specials = no_specials
+        self.detokenizer = Detokenizer()
+        self.vocab = Vocabulary()
+        self.model = SoweliToki(len(self.vocab),
+                hidden_size,
+                nhead,
+                hidden_size * 4,
+                num_layers,
+                0.0, 0.0)
+        self.model.load_state_dict(torch.load(checkpoint, map_location = 'cpu'))
+        if torch.cuda.is_available():
+            self.model = self.model.cuda()
+        self.model.eval()
+
+    def __call__(self):
+        x = sample_sentence(self.vocab, self.model, no_specials = self.no_specials)
+        x = ' '.join([self.vocab[n] for n in x])
+        x = self.detokenizer(x)
+        return x
+
 def main():
     parser = ArgumentParser()
     parser.add_argument('--checkpoint', default='checkpoint.pt')
@@ -52,18 +74,9 @@ def main():
     parser.add_argument('--no-specials', action = 'store_true')
     args = parser.parse_args()
 
-    detokenizer = Detokenizer()
-    vocab = Vocabulary()
-    model = SoweliToki(len(vocab), args.hidden_size, args.nhead, args.hidden_size * 4,
-            args.num_layers, 0.0, 0.0)
-    model.load_state_dict(torch.load(args.checkpoint, map_location = 'cpu'))
-    if torch.cuda.is_available():
-        model = model.cuda()
-    model.eval()
+    generator = TokiGenerator(args.checkpoint, args.hidden_size, args.nhead, args.num_layers, args.no_specials)
 
     while True:
-        x = sample_sentence(vocab, model, no_specials = args.no_specials)
-        x = ' '.join([vocab[n] for n in x])
-        x = detokenizer(x)
+        x = generator()
         print(x)
 
