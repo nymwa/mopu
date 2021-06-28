@@ -83,7 +83,7 @@ class TimeManager:
         return self.reply
 
     def __str__(self):
-        x = 'tweet: {}, m: {}, s: {}'.format(self.tweet, self.m, self.s)
+        x = 'tweet: {}, reply: {}, m: {}, s: {}'.format(self.tweet, self.reply, self.m, self.s)
         return x
 
 def gen_api(CK, CS, AK, AS):
@@ -115,6 +115,8 @@ def reply(api, soweli, last):
             name = m.user.screen_name
             stid = m.id
             text = soweli.reply(utt)
+            if len(text) <= 1:
+                text = 'mu.'
             status = '@{} {}'.format(name, text)
             api.update_status(status = status, in_reply_to_status_id = stid)
         except Exception as e:
