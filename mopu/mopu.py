@@ -30,6 +30,7 @@ class Mopu:
         self.normalizer = Normalizer()
         self.tokenizer = Tokenizer(vocab = vocab)
         self.detokenizer = Detokenizer()
+        self.soweli_threshold = 0.5
 
     def tweet(self):
         sent = self.sampler()
