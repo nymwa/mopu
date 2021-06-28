@@ -10,5 +10,8 @@ setuptools.setup(
                 'tunimi = tunimi.main:main',
                 'wannimi = tunimi.wannimi:main',
                 'train-toki = toki.train:main',
-                'topp-toki = toki.generate:main',
+                'mopu-taso = mopu.taso:main',
+                'mopu-poka = mopu.poka:main',
+                'mopu-lon = mopu.lon:main',
+                'mopumopu = mopu.mopu:main',
                 ]},)
