@@ -101,7 +101,7 @@ def tweet(api, soweli, last):
         print(e)
         print('failed')
 
-def reply(api, soweli):
+def reply(api, soweli, last):
     try:
         mtl = api.mentions_timeline(since_id = last)
     except:
