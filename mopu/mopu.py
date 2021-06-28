@@ -92,7 +92,7 @@ def gen_api(CK, CS, AK, AS):
     api = tweepy.API(auth)
     return api
 
-def tweet(api, soweli, last):
+def tweet(api, soweli):
     try:
         text = soweli.tweet()
         api.update_status(status = text)
